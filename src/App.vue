@@ -9,7 +9,7 @@ import Vue from "vue";
 import dummyData from "./assets/dummyData";
 import ProductInventory from './components/ProductInventory.vue';
 
-export default Vue.extend({
+export default {
   name: "App",
   components: {
     ProductInventory,
@@ -18,8 +18,11 @@ export default Vue.extend({
     return {
       products: dummyData
     }
+  },
+  apollo: {
+
   }
-});
+};
 </script>
 
 <style>
