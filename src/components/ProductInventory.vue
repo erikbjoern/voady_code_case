@@ -19,22 +19,13 @@
   </table>
 </template>
 
-<script lang="ts">
-interface Product {
-  id: Number;
-  name: String;
-  brand: String;
-  volume: Number;
-  purchase_price: Number;
-  selling_price: Number;
-  balance: Number;
-}
+<script>
 
 import Vue, { PropType } from "vue";
 export default Vue.extend({
   name: "ProductInventory",
   props: {
-    products: Array as PropType<Product[]>,
+    products: Array,
   },
 });
 </script>

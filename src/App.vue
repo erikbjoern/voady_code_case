@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from "vue";
 import dummyData from "./assets/dummyData";
 import ProductInventory from './components/ProductInventory.vue';
