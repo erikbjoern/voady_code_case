@@ -6,21 +6,26 @@
 
 <script>
 import Vue from "vue";
-import dummyData from "./assets/dummyData";
-import ProductInventory from './components/ProductInventory.vue';
+import gql from "graphql-tag";
+import ProductInventory from "./components/ProductInventory.vue";
 
 export default {
   name: "App",
   components: {
     ProductInventory,
   },
-  data() {
-    return {
-      products: dummyData
-    }
-  },
   apollo: {
-
+    products: gql`query {
+      products {
+        id
+        name
+        brand
+        volume
+        purchase_price
+        selling_price
+        balance
+      }
+    }`
   }
 };
 </script>
