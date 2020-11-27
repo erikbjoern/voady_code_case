@@ -1,31 +1,16 @@
 <template>
   <div id="app">
-    <product-inventory :products="products" />
+    <product-inventory />
   </div>
 </template>
 
 <script>
-import Vue from "vue";
-import gql from "graphql-tag";
 import ProductInventory from "./components/ProductInventory.vue";
 
 export default {
   name: "App",
   components: {
     ProductInventory,
-  },
-  apollo: {
-    products: gql`query {
-      products {
-        id
-        name
-        brand
-        volume
-        purchase_price
-        selling_price
-        balance
-      }
-    }`
   }
 };
 </script>
