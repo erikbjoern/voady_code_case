@@ -29,7 +29,7 @@
                 class="table-fixed min-w-full divide-y divide-gray-200 bg-gray-100"
               >
                 <thead class="shadow-sm">
-                  <tr>
+                  <tr class="h-14">
                     <th
                       scope="col"
                       class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3"
@@ -74,7 +74,7 @@
                     </th>
                     <th scope="col" class="px-6 py-3 bg-gray-50">
                       <svg
-                        v-if="!addProduct"
+                        v-if="authenticated && !addProduct"
                         class="edit shadow bg-yellow-400 rounded cursor-pointer p-1.5"
                         @click="toggleDropDown"
                         xmlns="http://www.w3.org/2000/svg"
@@ -174,10 +174,15 @@ export default {
       error: {},
     };
   },
+  props: {
+    authenticated: Boolean,
+  },
   computed: {
     graphqlError: function() {
-      return this.error.graphQLErrors ? this.error.graphQLErrors[0].message : null
-    }
+      return this.error.graphQLErrors
+        ? this.error.graphQLErrors[0].message
+        : null;
+    },
   },
   methods: {
     toggleDropDown: function() {

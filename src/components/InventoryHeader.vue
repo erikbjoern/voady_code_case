@@ -69,10 +69,12 @@ export default {
   name: "Header",
   data() {
     return {
-      authenticated: false,
       showLoginForm: false,
       user: {},
     };
+  },
+  props: {
+    authenticated: Boolean
   },
   methods: {
     toggleLoginForm: function() {
@@ -95,9 +97,7 @@ export default {
         event.target.reset();
         this.toggleLoginForm();
         this.user = response.data.login.user;
-        this.authenticated = true;
-
-        debugger;
+        this.$emit('login')
       } catch (error) {
         console.log(error);
       }
@@ -106,8 +106,6 @@ export default {
       const email = this.user.email;
 
       try {
-
-        debugger
         await this.$apollo.mutate({
           mutation: LOGOUT,
           variables: { email: email }
@@ -115,6 +113,7 @@ export default {
 
         this.authenticated = false
         this.user = {}
+        this.$emit('logout')
       } catch (error) {
         console.log(error);
       }

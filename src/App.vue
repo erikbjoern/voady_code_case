@@ -1,7 +1,11 @@
 <template>
   <div id="app">
-    <inventory-header />
-    <product-inventory />
+    <inventory-header
+      :authenticated="authenticated"
+      @login="authenticated = true"
+      @logout="authenticated = false"
+    />
+    <product-inventory :authenticated="authenticated" />
   </div>
 </template>
 
@@ -13,8 +17,13 @@ export default {
   name: "App",
   components: {
     ProductInventory,
-    InventoryHeader
-  }
+    InventoryHeader,
+  },
+  data() {
+    return {
+      authenticated: false,
+    };
+  },
 };
 </script>
 
