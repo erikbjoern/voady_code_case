@@ -143,6 +143,9 @@
           </div>
         </div>
       </div>
+      <div v-if="graphqlError" class="ml-20 mt-2 text-red-900">
+        {{ graphqlError || "Något gick fel." }}
+      </div>
     </template>
   </apollo-query>
 </template>
@@ -153,8 +156,8 @@ import NewProductRow from "./NewProductRow.vue";
 import ADD_PRODUCT from "../queries/addProduct.gql";
 
 export default {
-  components: { ProductTableBody, NewProductRow },
   name: "ProductInventory",
+  components: { ProductTableBody, NewProductRow },
   data() {
     return {
       dropDownOpen: false,
@@ -168,7 +171,13 @@ export default {
         selling_price: 123,
         balance: 123,
       },
+      error: {},
     };
+  },
+  computed: {
+    graphqlError: function() {
+      return this.error.graphQLErrors ? this.error.graphQLErrors[0].message : null
+    }
   },
   methods: {
     toggleDropDown: function() {
@@ -195,18 +204,21 @@ export default {
         const response = await this.$apollo.mutate({
           mutation: ADD_PRODUCT,
           variables: {
-            name: name.value,
-            id: id.value,
-            brand: brand.value,
-            volume: parseInt(volume.value),
-            purchase_price: parseFloat(purchase_price.value),
-            selling_price: parseFloat(selling_price.value),
-            balance: parseInt(balance.value),
-          }
+            product: {
+              name: name.value,
+              id: id.value,
+              brand: brand.value,
+              volume: parseInt(volume.value),
+              purchase_price: parseFloat(purchase_price.value),
+              selling_price: parseFloat(selling_price.value),
+              balance: parseInt(balance.value),
+            },
+          },
         });
 
         e.target.reset();
       } catch (error) {
+        this.error = error;
         console.log(error);
       }
     },
@@ -217,7 +229,7 @@ export default {
 <style>
 #main-table-container {
   width: 90vw;
-  margin: 5vw;
+  margin: 0 auto;
 }
 
 .edit {
