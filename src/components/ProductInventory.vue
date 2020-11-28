@@ -40,6 +40,12 @@
                       scope="col"
                       class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5"
                     >
+                      Artikelnummer
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5"
+                    >
                       Tillverkare
                     </th>
                     <th
@@ -70,7 +76,7 @@
                       <svg
                         v-if="!addProduct"
                         class="edit shadow bg-yellow-400 rounded cursor-pointer p-1.5"
-                        @click="toggleDropDown()"
+                        @click="toggleDropDown"
                         xmlns="http://www.w3.org/2000/svg"
                         width="30"
                         height="30"
@@ -91,7 +97,7 @@
                       >
                         <div class="py-1">
                           <a
-                            @click="toggleAddProduct()"
+                            @click="toggleAddProduct"
                             href="#"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                             role="menuitem"
@@ -102,7 +108,7 @@
                       <button
                         v-if="addProduct"
                         class="shadow bg-gray-400 px-4 py-2 text-white font-bold rounded"
-                        @click="toggleAddProduct()"
+                        @click="toggleAddProduct"
                       >
                         Tillbaka
                       </button>
@@ -110,8 +116,13 @@
                   </tr>
                 </thead>
                 <tbody v-if="addProduct">
-                  <new-product-row />
+                  <new-product-row :newProduct="newProduct" />
                 </tbody>
+                <form
+                  v-if="addProduct"
+                  id="addProduct"
+                  @submit="submitNewProduct"
+                ></form>
                 <div v-else-if="loading" class="text-gray-500 p-4 border-none">
                   Laddar . . .
                 </div>
@@ -119,7 +130,7 @@
                   {{ error.message }}
                 </div>
                 <product-table-body
-                  v-else-if="data.products"
+                  v-else-if="data && data.products !== {}"
                   :products="data.products"
                   :dropDownOpen="dropDownOpen"
                   :addProduct="addProduct"
@@ -137,9 +148,9 @@
 </template>
 
 <script>
-import Vue from "vue";
 import ProductTableBody from "./ProductTableBody.vue";
 import NewProductRow from "./NewProductRow.vue";
+import ADD_PRODUCT from "../queries/addProduct.gql";
 
 export default {
   components: { ProductTableBody, NewProductRow },
@@ -148,6 +159,15 @@ export default {
     return {
       dropDownOpen: false,
       addProduct: false,
+      newProduct: {
+        name: "123",
+        id: "123",
+        brand: "123",
+        volume: 123,
+        purchase_price: 123,
+        selling_price: 123,
+        balance: 123,
+      },
     };
   },
   methods: {
@@ -157,6 +177,38 @@ export default {
     toggleAddProduct: function() {
       this.addProduct = !this.addProduct;
       this.dropDownOpen = false;
+    },
+    submitNewProduct: async function(event) {
+      const e = event;
+      event.preventDefault();
+      const {
+        name,
+        id,
+        brand,
+        volume,
+        purchase_price,
+        selling_price,
+        balance,
+      } = event.target;
+
+      try {
+        const response = await this.$apollo.mutate({
+          mutation: ADD_PRODUCT,
+          variables: {
+            name: name.value,
+            id: id.value,
+            brand: brand.value,
+            volume: parseInt(volume.value),
+            purchase_price: parseFloat(purchase_price.value),
+            selling_price: parseFloat(selling_price.value),
+            balance: parseInt(balance.value),
+          }
+        });
+
+        e.target.reset();
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 };

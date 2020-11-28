@@ -3,51 +3,77 @@
     <td class="px-6 py-4 whitespace-nowrap">
       <input
         class="text-sm font-medium text-gray-900 bg-transparent min-w-full"
-        v-model="name"
+        form="addProduct"
+        name="name"
+        v-model="newProductProps.name"
       />
     </td>
     <td class="px-6 py-4 whitespace-nowrap">
       <input
         class="text-sm font-medium text-gray-900 bg-transparent min-w-full"
-        required
-        v-model="brand"
+        form="addProduct"
+        name="id"
+        required="true"
+        v-model="newProductProps.id"
+      />
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap">
+      <input
+        class="text-sm font-medium text-gray-900 bg-transparent min-w-full"
+        form="addProduct"
+        name="brand"
+        v-model="newProductProps.brand"
       />
     </td>
     <td class="px-6 py-4 whitespace-nowrap align-center">
       <input
         class="text-sm font-medium text-gray-900 bg-transparent numbers"
-        v-model="volume"
+        form="addProduct"
+        name="volume"
         type="number"
+        v-model="newProductProps.volume"
       />
       <span class="text-gray-500">ml</span>
     </td>
     <td class="px-6 py-4 whitespace-nowrap numbers-column">
-      <span class="text-gray-500">$</span>
       <input
         class="text-sm font-medium text-gray-900 bg-transparent numbers"
-        v-model="purchase_price"
+        form="addProduct"
+        name="purchase_price"
         type="number"
+        v-model="newProductProps.purchase_price"
       />
-    </td>
-    <td class="px-6 py-4 whitespace-nowrap numbers-column">
-      <span class="text-gray-500">$</span>
-      <input
-        class="text-sm font-medium text-gray-900 bg-transparent numbers"
-        v-model="selling_price"
-        type="number"
-      />
+      <span class="text-gray-500">kr</span>
     </td>
     <td class="px-6 py-4 whitespace-nowrap numbers-column">
       <input
         class="text-sm font-medium text-gray-900 bg-transparent numbers"
-        v-model="balance"
+        form="addProduct"
+        name="selling_price"
         type="number"
+        v-model="newProductProps.selling_price"
+      />
+      <span class="text-gray-500">kr</span>
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap numbers-column">
+      <input
+        class="text-sm font-medium text-gray-900 bg-transparent numbers"
+        form="addProduct"
+        name="balance"
+        required="true"
+        type="number"
+        v-model="newProductProps.balance"
       />
       <span class="text-gray-500">st</span>
     </td>
     <td class="px-6 py-4 whitespace-nowrap">
-      <button class="shadow bg-yellow-400 px-4 py-2 text-white font-bold rounded">
-        Lägg till</button>
+      <button
+        class="shadow bg-yellow-400 px-4 py-2 text-white font-bold rounded"
+        form="addProduct"
+        type="submit"
+      >
+        Lägg till
+      </button>
     </td>
   </tr>
 </template>
@@ -56,13 +82,22 @@
 export default {
   name: "NewProductRow",
   props: {
-    name: String,
-    brand: String,
-    volume: Number,
-    purchase_price: Number,
-    selling_price: Number,
-    balance: Number,
+    newProduct: {
+      name: String,
+      id: String,
+      brand: String,
+      volume: Number,
+      purchase_price: Number,
+      selling_price: Number,
+      balance: Number,
+    },
   },
+  computed: {
+    newProductProps() {
+      const { name, id, brand, volume, purchase_price, selling_price, balance } = this.newProduct
+      return { name, id, brand, volume, purchase_price, selling_price, balance }
+    }
+  }
 };
 </script>
 

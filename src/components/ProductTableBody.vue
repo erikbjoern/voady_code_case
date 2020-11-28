@@ -7,6 +7,11 @@
         </div>
       </td>
       <td class="px-6 py-4 whitespace-nowrap">
+        <div class="text-sm font-medium text-gray-900">
+          {{ product.id || "N/A" }}
+        </div>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap">
         <div class="text-sm text-gray-500">
           {{ product.brand || "N/A" }}
         </div>
@@ -18,12 +23,12 @@
       </td>
       <td class="px-6 py-4 whitespace-nowrap">
         <div class="text-sm text-gray-500 numbers">
-          {{ product.purchase_price ? `$${product.purchase_price.toFixed(2)}` : "N/A" }}
+          {{ product.purchase_price ? `${product.purchase_price.toFixed(2)}kr` : "N/A" }}
         </div>
       </td>
       <td class="px-6 py-4 whitespace-nowrap">
         <div class="text-sm text-gray-500 numbers">
-          {{ product.selling_price ? `$${product.selling_price.toFixed(2)}` : "N/A" }}
+          {{ product.selling_price ? `${product.selling_price.toFixed(2)}kr` : "N/A" }}
         </div>
       </td>
       <td class="px-6 py-4 whitespace-nowrap">
