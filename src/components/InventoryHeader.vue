@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-end header-container">
+  <div class="flex justify-end w-11/12 my-6 mx-auto">
     <div v-if="error" class="mr-10 mt-2 text-red-900">{{ graphQLError || "Något gick fel" }}</div>
     <div class="bg-gray-200 rounded shadow-inner">
       <form
@@ -129,10 +129,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.header-container {
-  width: 90vw;
-  margin: 40px auto;
-}
-</style>

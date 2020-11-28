@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import ProductInventory from "./components/ProductInventory.vue";
 import InventoryHeader from "./components/InventoryHeader.vue";
+import ProductInventory from "./components/ProductInventory.vue";
 
 export default {
   name: "App",
