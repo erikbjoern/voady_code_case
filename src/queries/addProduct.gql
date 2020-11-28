@@ -1,5 +1,5 @@
-mutation addProduct($productInput: ProductInput) {
-    addProduct(product: $productInput) {
+mutation addProduct($product: ProductInput) {
+    addProduct(product: $product) {
       id
     }
   }

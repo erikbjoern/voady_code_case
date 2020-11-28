@@ -1,16 +1,19 @@
 <template>
   <div id="app">
+    <inventory-header />
     <product-inventory />
   </div>
 </template>
 
 <script>
 import ProductInventory from "./components/ProductInventory.vue";
+import InventoryHeader from "./components/InventoryHeader.vue";
 
 export default {
   name: "App",
   components: {
     ProductInventory,
+    InventoryHeader
   }
 };
 </script>
@@ -22,7 +25,6 @@ body {
 }
 
 #app {
-  color: #000;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
 }
 </style>

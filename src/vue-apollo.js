@@ -13,6 +13,9 @@ const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'http://localhost:3000/
 
 // Config
 const defaultOptions = {
+  httpLinkOptions: {
+    credentials: 'include'
+  },
   // You can use `https` for secure connection (recommended in production)
   httpEndpoint,
   // You can use `wss` for secure connection (recommended in production)
