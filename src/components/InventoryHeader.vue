@@ -17,7 +17,7 @@
               id="email"
               type="email"
               name="email"
-              class="border-b border-gray-200 bg-transparent"
+              class="border-b border-gray-200 bg-transparent focus:outline-none"
             />
           </div>
         </label>
@@ -30,7 +30,7 @@
               id="password"
               type="password"
               name="password"
-              class="border-b border-gray-200 bg-transparent"
+              class="border-b border-gray-200 bg-transparent focus:outline-none"
             />
           </div>
         </label>

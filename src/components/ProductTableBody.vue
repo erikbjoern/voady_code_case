@@ -17,22 +17,22 @@
         </div>
       </td>
       <td class="px-6 py-4 whitespace-nowrap">
-        <div class="text-sm text-gray-500 numbers">
+        <div class="text-sm text-gray-500 text-right">
           {{ product.volume ? `${product.volume}ml` : "N/A" }}
         </div>
       </td>
       <td class="px-6 py-4 whitespace-nowrap">
-        <div class="text-sm text-gray-500 numbers">
+        <div class="text-sm text-gray-500 text-right">
           {{ product.purchase_price ? `${product.purchase_price.toFixed(2)}kr` : "N/A" }}
         </div>
       </td>
       <td class="px-6 py-4 whitespace-nowrap">
-        <div class="text-sm text-gray-500 numbers">
+        <div class="text-sm text-gray-500 text-right">
           {{ product.selling_price ? `${product.selling_price.toFixed(2)}kr` : "N/A" }}
         </div>
       </td>
       <td class="px-6 py-4 whitespace-nowrap">
-        <div class="text-sm text-gray-500 numbers">
+        <div class="text-sm text-gray-500 text-right">
           {{ product.balance ? `${product.balance}st` : "N/A" }}
         </div>
       </td>

@@ -17,7 +17,7 @@
     "
   >
     <template v-slot="{ result: { loading, error, data } }">
-      <div class="flex flex-col" id="main-table-container">
+      <div class="flex flex-col w-11/12 mx-auto" >
         <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div
             class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8"
@@ -132,25 +132,9 @@ export default {
         e.target.reset();
       } catch (error) {
         this.errorMessage = error;
-        debugger
         console.log(error);
       }
     },
   },
 };
 </script>
-
-<style>
-#main-table-container {
-  width: 90vw;
-  margin: 0 auto;
-}
-
-.edit {
-  fill: white;
-}
-
-.numbers {
-  text-align: right;
-}
-</style>
