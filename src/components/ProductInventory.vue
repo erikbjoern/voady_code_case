@@ -143,7 +143,7 @@
           </div>
         </div>
       </div>
-      <div v-if="graphqlError" class="ml-20 mt-2 text-red-900">
+      <div v-if="error" class="ml-20 mt-2 text-red-900">
         {{ graphqlError || "Något gick fel." }}
       </div>
     </template>
@@ -171,7 +171,7 @@ export default {
         selling_price: 123,
         balance: 123,
       },
-      error: {},
+      error: null,
     };
   },
   props: {
@@ -179,9 +179,7 @@ export default {
   },
   computed: {
     graphqlError: function() {
-      return this.error.graphQLErrors
-        ? this.error.graphQLErrors[0].message
-        : null;
+      return this.error?.graphQLErrors[0]?.message || null
     },
   },
   methods: {

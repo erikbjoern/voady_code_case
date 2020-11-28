@@ -1,5 +1,6 @@
 <template>
   <div class="flex justify-end header-container">
+    <div v-if="error" class="mr-10 mt-2 text-red-900">{{ graphQLError || "Något gick fel" }}</div>
     <div class="bg-gray-200 rounded shadow-inner">
       <form
         v-if="!authenticated && showLoginForm"
@@ -69,12 +70,18 @@ export default {
   name: "Header",
   data() {
     return {
+      error: null,
       showLoginForm: false,
       user: {},
     };
   },
   props: {
     authenticated: Boolean
+  },
+  computed: {
+    graphQLError: function() {
+      return this.error?.graphQLErrors[0]?.message || null
+    }
   },
   methods: {
     toggleLoginForm: function() {
@@ -99,6 +106,7 @@ export default {
         this.user = response.data.login.user;
         this.$emit('login')
       } catch (error) {
+        this.error = error
         console.log(error);
       }
     },
@@ -111,10 +119,10 @@ export default {
           variables: { email: email }
         });
 
-        this.authenticated = false
         this.user = {}
         this.$emit('logout')
       } catch (error) {
+        this.error = error
         console.log(error);
       }
     },
