@@ -17,47 +17,37 @@
     "
   >
     <template v-slot="{ result: { loading, error, data } }">
-      <div class="flex flex-col w-11/12 mx-auto" >
-        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div
-            class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8"
-          >
-            <div
-              class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
-            >
-              <table
-                class="table-fixed min-w-full divide-y divide-gray-200 bg-gray-100"
-              >
-                <product-table-head
-                  :authenticated="authenticated"
-                  :showNewProductForm="showNewProductForm"
-                  @toggleNewProductForm="showNewProductForm = !showNewProductForm"
-                />
-                <tbody v-if="showNewProductForm && authenticated">
-                  <new-product-row :newProduct="newProduct" />
-                </tbody>
-                <form
-                  v-if="showNewProductForm && authenticated"
-                  id="addProduct"
-                  @submit="submitNewProduct"
-                ></form>
-                <div v-else-if="loading" class="text-gray-500 p-4 border-none">
-                  Laddar . . .
-                </div>
-                <div v-else-if="error" class="text-gray-500 p-4 border-none">
-                  {{ error.message }}
-                </div>
-                <product-table-body
-                  v-else-if="data && data.products !== {}"
-                  :products="data.products"
-                />
-                <div v-else class="text-gray-500 p-4 border-none">
-                  Inga produkter hittades
-                </div>
-              </table>
-            </div>
+      <div class="shadow overflow-x-auto rounded-lg w-11/12 mx-auto">
+        <table
+          class="table-fixed min-w-full divide-y divide-gray-200 bg-gray-100"
+        >
+          <product-table-head
+            :authenticated="authenticated"
+            :showNewProductForm="showNewProductForm"
+            @toggleNewProductForm="showNewProductForm = !showNewProductForm"
+          />
+          <tbody v-if="showNewProductForm && authenticated">
+            <new-product-row :newProduct="newProduct" />
+          </tbody>
+          <form
+            v-if="showNewProductForm && authenticated"
+            id="addProduct"
+            @submit="submitNewProduct"
+          ></form>
+          <div v-else-if="loading" class="text-gray-500 p-4 border-none">
+            Laddar . . .
           </div>
-        </div>
+          <div v-else-if="error" class="text-gray-500 p-4 border-none">
+            {{ error.message }}
+          </div>
+          <product-table-body
+            v-else-if="data && data.products !== {}"
+            :products="data.products"
+          />
+          <div v-else class="text-gray-500 p-4 border-none">
+            Inga produkter hittades
+          </div>
+        </table>
       </div>
       <div v-if="errorMessage" class="ml-20 mt-2 text-red-900">
         {{ graphqlError || "Något gick fel." }}

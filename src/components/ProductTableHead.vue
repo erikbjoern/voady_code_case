@@ -46,7 +46,7 @@
       <th scope="col" class="px-6 py-3 bg-gray-50">
         <svg
           v-if="authenticated && !showNewProductForm"
-          class="edit-button shadow bg-yellow-400 h-9 rounded cursor-pointer p-1.5"
+          class="edit-button shadow bg-yellow-400 h-9 rounded cursor-pointer p-1.5 hover:opacity-80"
           @click="toggleDropdown"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -77,7 +77,7 @@
         </div>
         <button
           v-if="showNewProductForm && authenticated"
-          class="shadow bg-gray-400 px-4 py-2 text-white font-bold rounded"
+          class="shadow bg-gray-400 px-4 py-2 text-white font-bold rounded  hover:opacity-80"
           @click="toggleNewProductForm"
         >
           Tillbaka
