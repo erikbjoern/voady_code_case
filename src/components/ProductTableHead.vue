@@ -60,6 +60,11 @@
         </svg>
         <div
           v-show="showDropdown && authenticated"
+          class="absolute left-0 top-0 w-screen h-screen z-20"
+          @click="toggleDropdown"
+        ></div>
+        <div
+          v-show="showDropdown && authenticated"
           class="origin-top-right absolute right-20 mt-2 w-36 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100"
           role="menu"
           aria-orientation="vertical"
