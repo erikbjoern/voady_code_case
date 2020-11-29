@@ -65,7 +65,7 @@
         ></div>
         <div
           v-show="showDropdown && authenticated"
-          class="origin-top-right absolute right-20 mt-2 w-36 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100"
+          class="origin-top-right absolute right-20 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 z-30"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="options-menu"
@@ -73,10 +73,15 @@
           <div class="py-1">
             <a
               @click="toggleNewProductForm"
-              href="#"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
               role="menuitem"
               >Lägg till produkt</a
+            >
+            <a
+              @click="$emit('delete-products')"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+              role="menuitem"
+              >Ta bort produkter</a
             >
           </div>
         </div>

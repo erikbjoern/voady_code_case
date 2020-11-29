@@ -1,0 +1,5 @@
+mutation deleteProducts($products: [DeleteInput]) {
+  deleteProducts(products: $products) {
+    id
+  }
+}

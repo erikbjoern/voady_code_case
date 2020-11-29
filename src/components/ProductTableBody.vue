@@ -37,7 +37,7 @@
         </div>
       </td>
       <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-        <a href="#" class="text-indigo-600 hover:text-indigo-900"></a>
+        <input type="checkbox" v-if="authenticated" @change="$emit('select', { isChecked: $event, id: product.id })" />
       </td>
     </tr>
   </tbody>
@@ -47,6 +47,7 @@
 export default {
   name: "ProductTable",
   props: {
+    authenticated: Boolean,
     products: Array,
   },
 };

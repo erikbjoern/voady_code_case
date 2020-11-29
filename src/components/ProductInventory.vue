@@ -25,6 +25,7 @@
             :authenticated="authenticated"
             :showNewProductForm="showNewProductForm"
             @toggleNewProductForm="showNewProductForm = !showNewProductForm"
+            @delete-products="deleteProducts"
           />
           <tbody v-if="showNewProductForm && authenticated">
             <new-product-row :newProduct="newProduct" />
@@ -42,7 +43,9 @@
           </div>
           <product-table-body
             v-else-if="data && data.products !== {}"
+            :authenticated="authenticated"
             :products="data.products"
+            @select="addProductToSelection"
           />
           <div v-else class="text-gray-500 p-4 border-none">
             Inga produkter hittades
@@ -61,6 +64,7 @@ import ProductTableHead from "./ProductTableHead.vue";
 import ProductTableBody from "./ProductTableBody.vue";
 import NewProductRow from "./NewProductRow.vue";
 import ADD_PRODUCT from "../queries/addProduct.gql";
+import DELETE_PRODUCTS from "../queries/deleteProducts.gql";
 
 export default {
   name: "ProductInventory",
@@ -78,6 +82,7 @@ export default {
         selling_price: null,
         balance: null,
       },
+      selectedProducts: [],
       errorMessage: null,
     };
   },
@@ -90,6 +95,25 @@ export default {
     },
   },
   methods: {
+    addProductToSelection: function({ isChecked, id }) {
+      isChecked
+        ? this.selectedProducts.push({ id })
+        : this.selectedProducts.pop({ id });
+    },
+    deleteProducts: async function() {
+      try {
+        debugger
+        await this.$apollo.mutate({
+          mutation: DELETE_PRODUCTS,
+          variables: {
+            products: this.selectedProducts
+          }
+        })
+      } catch (error) {
+        this.errorMessage = error
+        console.log(error)
+      }
+    },
     submitNewProduct: async function(event) {
       const e = event;
       event.preventDefault();
