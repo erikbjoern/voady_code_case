@@ -1,17 +1,29 @@
 <template>
   <div id="app">
-    <product-inventory />
+    <inventory-header
+      :authenticated="authenticated"
+      @login="authenticated = true"
+      @logout="authenticated = false"
+    />
+    <product-inventory :authenticated="authenticated" />
   </div>
 </template>
 
 <script>
+import InventoryHeader from "./components/InventoryHeader.vue";
 import ProductInventory from "./components/ProductInventory.vue";
 
 export default {
   name: "App",
   components: {
     ProductInventory,
-  }
+    InventoryHeader,
+  },
+  data() {
+    return {
+      authenticated: false,
+    };
+  },
 };
 </script>
 
@@ -22,7 +34,6 @@ body {
 }
 
 #app {
-  color: #000;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
 }
 </style>

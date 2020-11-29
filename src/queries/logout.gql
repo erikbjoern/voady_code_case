@@ -1,0 +1,9 @@
+mutation logout($email: String!) {
+  logout(email: $email) {
+    user {
+      firstName
+      lastName
+      email
+    }
+  }
+}
