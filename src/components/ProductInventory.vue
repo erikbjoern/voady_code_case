@@ -46,7 +46,7 @@
             {{ error.message }}
           </div>
           <product-table-body
-            v-else-if="data && data.products !== {}"
+            v-else-if="data.products.length"
             :authenticated="authenticated"
             :products="data.products"
             :selectedProducts="selectedProducts"
