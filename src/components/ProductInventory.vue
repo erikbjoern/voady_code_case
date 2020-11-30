@@ -33,7 +33,8 @@
             :showNewProductForm="showNewProductForm"
             :showDropdown="showDropdown"
             @delete-products="toggleModal"
-            @toggle-delete-checkboxes="toggleDeleteCheckboxes"
+            @toggle-delete-checkboxes="toggleCheckboxes('delete')"
+            @toggle-edit-checkboxes="toggleCheckboxes('edit')"
             @toggle-dropdown="toggleDropdown"
             @toggle-new-product-form="toggleNewProductForm"
           />
@@ -52,13 +53,16 @@
             {{ error.message }}
           </div>
           <product-table-body
-            v-else-if="data.products.length"
+            v-else-if="data && data.products.length"
             :authenticated="authenticated"
             :products="data.products"
             :selectedProducts="selectedProducts"
             :showDeleteCheckboxes="showDeleteCheckboxes"
-            @select="addProductToSelection"
+            :showEditCheckboxes="showEditCheckboxes"
+            @select="handleProductSelection"
             @delete-products="showModal = true"
+            @edit-all-products-balance="updateAllProducts()"
+            @edit-balance="handleEditedBalance"
           />
           <div v-else class="text-gray-500 p-4 border-none">
             Inga produkter hittades
@@ -79,6 +83,7 @@ import ProductTableBody from "./ProductTableBody.vue";
 import ProductTableHead from "./ProductTableHead.vue";
 import ADD_PRODUCT from "../graphql/mutations/addProduct.gql";
 import DELETE_PRODUCTS from "../graphql/mutations/deleteProducts.gql";
+import EDIT_PRODUCTS_BALANCE from "../graphql/mutations/editProductsBalance.gql";
 import gql from "graphql-tag";
 
 export default {
@@ -92,6 +97,7 @@ export default {
   data() {
     return {
       showDeleteCheckboxes: false,
+      showEditCheckboxes: false,
       showDropdown: false,
       showModal: false,
       showNewProductForm: false,
@@ -104,6 +110,7 @@ export default {
         selling_price: null,
         balance: null,
       },
+      editedBalances: [],
       selectedProducts: [],
       errorMessage: null,
     };
@@ -117,21 +124,24 @@ export default {
     },
   },
   methods: {
-    addProductToSelection: function({ event, id }) {
-      if (
-        event.target.checked &&
-        !this.selectedProducts.map((p) => p.id).includes(id)
-      ) {
-        this.selectedProducts.push({ id });
+    handleProductSelection: function({ event, id }) {
+      const selected = this.selectedProducts;
+      const edited = this.editedBalances;
+
+      if (event.target.checked && !selected.map((p) => p.id).includes(id)) {
+        selected.push({ id });
       } else {
-        const index = this.selectedProducts.indexOf(
-          this.selectedProducts.find((p) => p.id === id)
-        );
-        this.selectedProducts.splice(index, 1);
+        const index = selected.indexOf(selected.find((p) => p.id === id));
+        selected.splice(index, 1);
+
+        if (edited.map((p) => p.id).includes(id)) {
+          const index = edited.indexOf(edited.find((p) => p.id === id));
+          edited.splice(index, 1);
+        }
       }
     },
     deleteProducts: async function() {
-      this.showModal = false
+      this.showModal = false;
 
       try {
         await this.$apollo.mutate({
@@ -188,6 +198,34 @@ export default {
         console.log(error);
       }
     },
+    handleEditedBalance: function({ id, balance }) {
+      const alreadyEditedProduct = this.editedBalances.find((p) => p.id === id);
+
+      if (alreadyEditedProduct) {
+        const index = this.editedBalances.indexOf(alreadyEditedProduct);
+        this.editedBalances[index] = { id, balance };
+      } else {
+        this.editedBalances.push({ id, balance });
+      }
+    },
+    updateAllProducts: async function() {
+      debugger
+
+      try {
+        await this.$apollo.mutate({
+          mutation: EDIT_PRODUCTS_BALANCE,
+          variables: {
+            products: this.editedBalances,
+          }
+        })
+
+        this.editedBalances = [];
+        this.selectedProducts = [];
+      } catch (error) {
+        this.errorMessage = error;
+        console.log(error);
+      }
+    },
     submitNewProduct: async function(event) {
       const e = event;
       event.preventDefault();
@@ -223,16 +261,19 @@ export default {
         console.log(error);
       }
     },
-    toggleDeleteCheckboxes: function() {
-      this.showDeleteCheckboxes = !this.showDeleteCheckboxes;
+    toggleCheckboxes: function(type) {
+      this.showEditCheckboxes =
+        type === "edit" ? !this.showEditCheckboxes : false;
+      this.showDeleteCheckboxes =
+        type === "delete" ? !this.showDeleteCheckboxes : false;
       this.showDropdown = false;
     },
     toggleDropdown: function() {
       this.showDropdown = !this.showDropdown;
     },
     toggleModal: function() {
-      this.showModal = !this.showModal
-      this.showDropdown = false
+      this.showModal = !this.showModal;
+      this.showDropdown = false;
     },
     toggleNewProductForm: function() {
       this.showNewProductForm = !this.showNewProductForm;
