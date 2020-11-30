@@ -49,8 +49,10 @@
             v-else-if="data && data.products !== {}"
             :authenticated="authenticated"
             :products="data.products"
+            :selectedProducts="selectedProducts"
             :showDeleteCheckboxes="showDeleteCheckboxes"
             @select="addProductToSelection"
+            @delete-products="deleteProducts"
           />
           <div v-else class="text-gray-500 p-4 border-none">
             Inga produkter hittades
@@ -102,10 +104,15 @@ export default {
     },
   },
   methods: {
-    addProductToSelection: function({ isChecked, id }) {
-      isChecked
-        ? this.selectedProducts.push({ id })
-        : this.selectedProducts.pop({ id });
+    addProductToSelection: function({ event, id }) {
+      if (event.target.checked && !this.selectedProducts.map(p => p.id).includes(id)) {
+        this.selectedProducts.push({ id })
+      } else {
+        const index = this.selectedProducts.indexOf(
+          this.selectedProducts.find((p) => p.id === id)
+        );
+        this.selectedProducts.splice(index, 1);
+      }
     },
     deleteProducts: async function() {
       try {
@@ -209,6 +216,7 @@ export default {
     toggleNewProductForm: function() {
       this.showNewProductForm = !this.showNewProductForm;
       this.showDropdown = false;
+      this.showDeleteCheckboxes = false;
     },
   },
 };

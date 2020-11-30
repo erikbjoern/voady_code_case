@@ -1,49 +1,49 @@
 <template>
   <thead class="shadow-sm">
-    <tr class="h-14">
+    <tr class="h-14 bg-gray-50">
       <th
         scope="col"
-        class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3"
+        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3"
       >
         Namn
       </th>
       <th
         scope="col"
-        class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5"
+        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5"
       >
         Artikelnummer
       </th>
       <th
         scope="col"
-        class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5"
+        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5"
       >
         Tillverkare
       </th>
       <th
         scope="col"
-        class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
       >
         Volym
       </th>
       <th
         scope="col"
-        class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
       >
         Inköpspris
       </th>
       <th
         scope="col"
-        class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
       >
         Försäljningspris
       </th>
       <th
         scope="col"
-        class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
       >
         Lagersaldo
       </th>
-      <th scope="col" class="px-6 py-3 bg-gray-50">
+      <th scope="col" class="px-6 py-3 flex justify-center">
         <svg
           v-if="authenticated && !showNewProductForm"
           class="edit-button shadow bg-yellow-400 h-9 rounded cursor-pointer p-1.5 hover:opacity-80 hover:shadow-inner"
@@ -113,5 +113,3 @@ export default {
   },
 };
 </script>
-
-<style></style>
