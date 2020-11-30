@@ -1,0 +1,6 @@
+mutation editProductsBalance($products: [EditBalanceInput]) {
+  editProductsBalance(products: $products) {
+    id
+    balance
+  }
+}

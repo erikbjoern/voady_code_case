@@ -1,15 +1,26 @@
 <template>
   <tbody class="bg-white divide-y divide-gray-200">
-    <tr v-if="showDeleteCheckboxes">
+    <tr v-if="authenticated && showDeleteCheckboxes">
       <td colspan="7"></td>
       <td>
         <button
-          v-if="authenticated && showDeleteCheckboxes"
           class="shadow-sm bg-red-700 w-24 px-4 py-2 m-1 text-white font-bold rounded justify-self-end"
           :class="disabledEnabledButton"
           @click="$emit('delete-products')"
         >
           Ta bort
+        </button>
+      </td>
+    </tr>
+    <tr v-if="authenticated && showEditCheckboxes">
+      <td colspan="7"></td>
+      <td>
+        <button
+          class="shadow-sm bg-yellow-400 w-24 px-4 py-2 m-1 text-white font-bold rounded justify-self-end"
+          :class="disabledEnabledButton"
+          @click="$emit('edit-all-products-balance')"
+        >
+          Spara
         </button>
       </td>
     </tr>
@@ -53,8 +64,20 @@
         </div>
       </td>
       <td class="px-6 py-4 whitespace-nowrap">
-        <div class="text-sm text-gray-500 text-right">
+        <div
+          v-if="!showEditCheckboxes || (showEditCheckboxes && !selectedProducts.map((p) => p.id).includes(product.id))"
+          class="text-sm text-gray-500 text-right"
+        >
           {{ product.balance ? `${product.balance}st` : "N/A" }}
+        </div>
+        <div v-else-if="showEditCheckboxes">
+          <input
+            v-if="showEditCheckboxes"
+            type="number"
+            class="edit-balance text-right w-20 pr-5 relative left-5"
+            v-model="product.balance"
+            @change="$emit('edit-balance', {id: product.id, balance: parseInt(product.balance)})"
+          /><span class="absolute mt-0.5">st</span>
         </div>
       </td>
       <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
@@ -62,12 +85,15 @@
           v-if="authenticated"
           :htmlFor="product.id"
           class="block mx-auto border-2 h-5 w-5 cursor-pointer rounded hover:bg-gray-200 hover:border-3 hover:border-gray-300"
-          :class="deleteModeCheckbox"
+          :class="[deleteModeCheckbox, editModeCheckbox]"
         >
           <span
             v-if="selectedProducts.map((p) => p.id).includes(product.id)"
             class="relative bottom-0.5 font-bold text-gray-400 w-full"
-            :class="{ 'text-red-700': showDeleteCheckboxes }"
+            :class="{
+              'text-red-700': showDeleteCheckboxes,
+              'text-yellow-500': showEditCheckboxes,
+            }"
             >X</span
           >
           <input
@@ -94,6 +120,14 @@ export default {
         "hover:border-red-800": this.showDeleteCheckboxes,
       };
     },
+    editModeCheckbox: function() {
+      return {
+        "border-yellow-400": this.showEditCheckboxes,
+        "hover:bg-yellow-300": this.showEditCheckboxes,
+        "hover:border-3": this.showEditCheckboxes,
+        "hover:border-yellow-500": this.showEditCheckboxes,
+      };
+    },
     disabledEnabledButton: function() {
       return {
         "opacity-60": !this.selectedProducts.length,
@@ -107,6 +141,24 @@ export default {
     products: Array,
     selectedProducts: Array,
     showDeleteCheckboxes: Boolean,
+    showEditCheckboxes: Boolean,
   },
 };
 </script>
+
+<style scoped>
+.edit-balance {
+  border: 2px solid rgb(243, 183, 87) !important;
+  border-radius: 3px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+</style>

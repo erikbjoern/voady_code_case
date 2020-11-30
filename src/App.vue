@@ -31,6 +31,7 @@ export default {
 body {
   background-color: rgb(178, 194, 192);
   margin: 0;
+  padding-bottom: 50px;
 }
 
 #app {

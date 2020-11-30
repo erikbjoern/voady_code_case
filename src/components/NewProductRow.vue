@@ -6,6 +6,7 @@
         form="addProduct"
         name="name"
         v-model="newProductProps.name"
+        @input="$emit('input')"
       />
     </td>
     <td class="px-6 py-4 whitespace-nowrap">
@@ -15,6 +16,7 @@
         name="id"
         required="true"
         v-model="newProductProps.id"
+        @input="$emit('input')"
       />
     </td>
     <td class="px-6 py-4 whitespace-nowrap">
@@ -23,6 +25,7 @@
         form="addProduct"
         name="brand"
         v-model="newProductProps.brand"
+        @input="$emit('input')"
       />
     </td>
     <td class="px-6 py-4 whitespace-nowrap align-center">
@@ -32,6 +35,7 @@
         name="volume"
         type="number"
         v-model="newProductProps.volume"
+        @input="$emit('input')"
       />
       <span class="text-gray-500">ml</span>
     </td>
@@ -42,6 +46,7 @@
         name="purchase_price"
         type="number"
         v-model="newProductProps.purchase_price"
+        @input="$emit('input')"
       />
       <span class="text-gray-500">kr</span>
     </td>
@@ -52,6 +57,7 @@
         name="selling_price"
         type="number"
         v-model="newProductProps.selling_price"
+        @input="$emit('input')"
       />
       <span class="text-gray-500">kr</span>
     </td>
@@ -63,6 +69,7 @@
         required="true"
         type="number"
         v-model="newProductProps.balance"
+        @input="$emit('input')"
       />
       <span class="text-gray-500">st</span>
     </td>
@@ -90,7 +97,7 @@ export default {
       purchase_price: Number,
       selling_price: Number,
       balance: Number,
-    },
+    }
   },
   computed: {
     newProductProps() {

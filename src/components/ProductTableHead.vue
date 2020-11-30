@@ -70,18 +70,24 @@
           aria-orientation="vertical"
           aria-labelledby="options-menu"
         >
-          <div class="py-1">
+          <div class="py-1 bg-gray-100 rounded">
             <a
               @click="$emit('toggle-new-product-form')"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer"
               role="menuitem"
               >Lägg till produkt</a
             >
             <a
               @click="handleDeleteProducts"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer"
               role="menuitem"
               >Ta bort produkter</a
+            >
+            <a
+              @click="$emit('toggle-edit-checkboxes')"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer"
+              role="menuitem"
+              >Justera lagersaldo</a
             >
           </div>
         </div>
