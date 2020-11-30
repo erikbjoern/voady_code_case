@@ -63,8 +63,8 @@
 </template>
 
 <script>
-import LOGIN from "../queries/login.gql";
-import LOGOUT from "../queries/logout.gql";
+import LOGIN from "../graphql/mutations/login.gql";
+import LOGOUT from "../graphql/mutations/logout.gql";
 
 export default {
   name: "Header",

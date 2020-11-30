@@ -63,8 +63,9 @@
 import ProductTableHead from "./ProductTableHead.vue";
 import ProductTableBody from "./ProductTableBody.vue";
 import NewProductRow from "./NewProductRow.vue";
-import ADD_PRODUCT from "../queries/addProduct.gql";
-import DELETE_PRODUCTS from "../queries/deleteProducts.gql";
+import ADD_PRODUCT from "../graphql/mutations/addProduct.gql";
+import DELETE_PRODUCTS from "../graphql/mutations/deleteProducts.gql";
+import gql from "graphql-tag";
 
 export default {
   name: "ProductInventory",
@@ -102,16 +103,57 @@ export default {
     },
     deleteProducts: async function() {
       try {
-        debugger
         await this.$apollo.mutate({
           mutation: DELETE_PRODUCTS,
           variables: {
-            products: this.selectedProducts
-          }
-        })
+            products: this.selectedProducts,
+          },
+          update: (store, { data: { deleteProducts } }) => {
+            const data = store.readQuery({
+              query: gql`
+                query products {
+                  products {
+                    id
+                    name
+                    brand
+                    volume
+                    purchase_price
+                    selling_price
+                    balance
+                  }
+                }
+              `,
+            });
+
+            deleteProducts.forEach((productToDelete => {
+              const products = data.products
+              const index = products.indexOf(products.find(p => p.id === productToDelete.id))
+              products.splice(index, 1)
+            }))
+
+            store.writeQuery({
+              query: gql`
+                query products {
+                  products {
+                    id
+                    name
+                    brand
+                    volume
+                    purchase_price
+                    selling_price
+                    balance
+                  }
+                }
+              `,
+              data,
+            });
+          },
+        });
+
+        this.selectedProducts = [];
       } catch (error) {
-        this.errorMessage = error
-        console.log(error)
+        this.errorMessage = error;
+        console.log(error);
       }
     },
     submitNewProduct: async function(event) {
