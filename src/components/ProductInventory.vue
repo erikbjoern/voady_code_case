@@ -17,6 +17,12 @@
     "
   >
     <template v-slot="{ result: { loading, error, data } }">
+      <modal-dialog
+        v-if="showModal"
+        text="Vill du ta bort markerade produkter?"
+        @ok="deleteProducts"
+        @cancel="showModal = false"
+      />
       <div class="shadow overflow-x-auto rounded-lg w-11/12 mx-auto">
         <table
           class="table-fixed min-w-full divide-y divide-gray-200 bg-gray-100"
@@ -26,7 +32,7 @@
             :selectedProducts="!!selectedProducts.length"
             :showNewProductForm="showNewProductForm"
             :showDropdown="showDropdown"
-            @delete-products="deleteProducts"
+            @delete-products="toggleModal"
             @toggle-delete-checkboxes="toggleDeleteCheckboxes"
             @toggle-dropdown="toggleDropdown"
             @toggle-new-product-form="toggleNewProductForm"
@@ -52,35 +58,42 @@
             :selectedProducts="selectedProducts"
             :showDeleteCheckboxes="showDeleteCheckboxes"
             @select="addProductToSelection"
-            @delete-products="deleteProducts"
+            @delete-products="showModal = true"
           />
           <div v-else class="text-gray-500 p-4 border-none">
             Inga produkter hittades
           </div>
+          <div v-if="errorMessage" class="ml-20 mt-2 text-red-900">
+            {{ graphqlError || "Något gick fel." }}
+          </div>
         </table>
-      </div>
-      <div v-if="errorMessage" class="ml-20 mt-2 text-red-900">
-        {{ graphqlError || "Något gick fel." }}
       </div>
     </template>
   </apollo-query>
 </template>
 
 <script>
-import ProductTableHead from "./ProductTableHead.vue";
-import ProductTableBody from "./ProductTableBody.vue";
+import ModalDialog from "./ModalDialog.vue";
 import NewProductRow from "./NewProductRow.vue";
+import ProductTableBody from "./ProductTableBody.vue";
+import ProductTableHead from "./ProductTableHead.vue";
 import ADD_PRODUCT from "../graphql/mutations/addProduct.gql";
 import DELETE_PRODUCTS from "../graphql/mutations/deleteProducts.gql";
 import gql from "graphql-tag";
 
 export default {
   name: "ProductInventory",
-  components: { ProductTableBody, NewProductRow, ProductTableHead },
+  components: {
+    ModalDialog,
+    NewProductRow,
+    ProductTableBody,
+    ProductTableHead,
+  },
   data() {
     return {
       showDeleteCheckboxes: false,
       showDropdown: false,
+      showModal: false,
       showNewProductForm: false,
       newProduct: {
         name: "",
@@ -105,8 +118,11 @@ export default {
   },
   methods: {
     addProductToSelection: function({ event, id }) {
-      if (event.target.checked && !this.selectedProducts.map(p => p.id).includes(id)) {
-        this.selectedProducts.push({ id })
+      if (
+        event.target.checked &&
+        !this.selectedProducts.map((p) => p.id).includes(id)
+      ) {
+        this.selectedProducts.push({ id });
       } else {
         const index = this.selectedProducts.indexOf(
           this.selectedProducts.find((p) => p.id === id)
@@ -115,6 +131,8 @@ export default {
       }
     },
     deleteProducts: async function() {
+      this.showModal = false
+
       try {
         await this.$apollo.mutate({
           mutation: DELETE_PRODUCTS,
@@ -164,7 +182,6 @@ export default {
             });
           },
         });
-
         this.selectedProducts = [];
       } catch (error) {
         this.errorMessage = error;
@@ -212,6 +229,10 @@ export default {
     },
     toggleDropdown: function() {
       this.showDropdown = !this.showDropdown;
+    },
+    toggleModal: function() {
+      this.showModal = !this.showModal
+      this.showDropdown = false
     },
     toggleNewProductForm: function() {
       this.showNewProductForm = !this.showNewProductForm;
