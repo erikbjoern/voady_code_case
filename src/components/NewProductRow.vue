@@ -68,7 +68,7 @@
     </td>
     <td class="px-6 py-4 whitespace-nowrap">
       <button
-        class="shadow bg-yellow-400 px-4 py-2 text-white font-bold rounded hover:opacity-80"
+        class="shadow-sm bg-yellow-400 px-4 py-2 text-white font-bold rounded hover:opacity-80 hover:shadow-inner"
         form="addProduct"
         type="submit"
       >

@@ -17,14 +17,25 @@
     "
   >
     <template v-slot="{ result: { loading, error, data } }">
+      <modal-dialog
+        v-if="showModal"
+        text="Vill du ta bort markerade produkter?"
+        @ok="deleteProducts"
+        @cancel="showModal = false"
+      />
       <div class="shadow overflow-x-auto rounded-lg w-11/12 mx-auto">
         <table
           class="table-fixed min-w-full divide-y divide-gray-200 bg-gray-100"
         >
           <product-table-head
             :authenticated="authenticated"
+            :selectedProducts="!!selectedProducts.length"
             :showNewProductForm="showNewProductForm"
-            @toggleNewProductForm="showNewProductForm = !showNewProductForm"
+            :showDropdown="showDropdown"
+            @delete-products="toggleModal"
+            @toggle-delete-checkboxes="toggleDeleteCheckboxes"
+            @toggle-dropdown="toggleDropdown"
+            @toggle-new-product-form="toggleNewProductForm"
           />
           <tbody v-if="showNewProductForm && authenticated">
             <new-product-row :newProduct="newProduct" />
@@ -41,33 +52,48 @@
             {{ error.message }}
           </div>
           <product-table-body
-            v-else-if="data && data.products !== {}"
+            v-else-if="data.products.length"
+            :authenticated="authenticated"
             :products="data.products"
+            :selectedProducts="selectedProducts"
+            :showDeleteCheckboxes="showDeleteCheckboxes"
+            @select="addProductToSelection"
+            @delete-products="showModal = true"
           />
           <div v-else class="text-gray-500 p-4 border-none">
             Inga produkter hittades
           </div>
+          <div v-if="errorMessage" class="ml-20 mt-2 text-red-900">
+            {{ graphqlError || "Något gick fel." }}
+          </div>
         </table>
-      </div>
-      <div v-if="errorMessage" class="ml-20 mt-2 text-red-900">
-        {{ graphqlError || "Något gick fel." }}
       </div>
     </template>
   </apollo-query>
 </template>
 
 <script>
-import ProductTableHead from "./ProductTableHead.vue";
-import ProductTableBody from "./ProductTableBody.vue";
+import ModalDialog from "./ModalDialog.vue";
 import NewProductRow from "./NewProductRow.vue";
-import ADD_PRODUCT from "../queries/addProduct.gql";
+import ProductTableBody from "./ProductTableBody.vue";
+import ProductTableHead from "./ProductTableHead.vue";
+import ADD_PRODUCT from "../graphql/mutations/addProduct.gql";
+import DELETE_PRODUCTS from "../graphql/mutations/deleteProducts.gql";
+import gql from "graphql-tag";
 
 export default {
   name: "ProductInventory",
-  components: { ProductTableBody, NewProductRow, ProductTableHead },
+  components: {
+    ModalDialog,
+    NewProductRow,
+    ProductTableBody,
+    ProductTableHead,
+  },
   data() {
     return {
+      showDeleteCheckboxes: false,
       showDropdown: false,
+      showModal: false,
       showNewProductForm: false,
       newProduct: {
         name: "",
@@ -78,6 +104,7 @@ export default {
         selling_price: null,
         balance: null,
       },
+      selectedProducts: [],
       errorMessage: null,
     };
   },
@@ -90,6 +117,77 @@ export default {
     },
   },
   methods: {
+    addProductToSelection: function({ event, id }) {
+      if (
+        event.target.checked &&
+        !this.selectedProducts.map((p) => p.id).includes(id)
+      ) {
+        this.selectedProducts.push({ id });
+      } else {
+        const index = this.selectedProducts.indexOf(
+          this.selectedProducts.find((p) => p.id === id)
+        );
+        this.selectedProducts.splice(index, 1);
+      }
+    },
+    deleteProducts: async function() {
+      this.showModal = false
+
+      try {
+        await this.$apollo.mutate({
+          mutation: DELETE_PRODUCTS,
+          variables: {
+            products: this.selectedProducts,
+          },
+          update: (store, { data: { deleteProducts } }) => {
+            const data = store.readQuery({
+              query: gql`
+                query products {
+                  products {
+                    id
+                    name
+                    brand
+                    volume
+                    purchase_price
+                    selling_price
+                    balance
+                  }
+                }
+              `,
+            });
+
+            deleteProducts.forEach((productToDelete) => {
+              const products = data.products;
+              const index = products.indexOf(
+                products.find((p) => p.id === productToDelete.id)
+              );
+              products.splice(index, 1);
+            });
+
+            store.writeQuery({
+              query: gql`
+                query products {
+                  products {
+                    id
+                    name
+                    brand
+                    volume
+                    purchase_price
+                    selling_price
+                    balance
+                  }
+                }
+              `,
+              data,
+            });
+          },
+        });
+        this.selectedProducts = [];
+      } catch (error) {
+        this.errorMessage = error;
+        console.log(error);
+      }
+    },
     submitNewProduct: async function(event) {
       const e = event;
       event.preventDefault();
@@ -124,6 +222,22 @@ export default {
         this.errorMessage = error;
         console.log(error);
       }
+    },
+    toggleDeleteCheckboxes: function() {
+      this.showDeleteCheckboxes = !this.showDeleteCheckboxes;
+      this.showDropdown = false;
+    },
+    toggleDropdown: function() {
+      this.showDropdown = !this.showDropdown;
+    },
+    toggleModal: function() {
+      this.showModal = !this.showModal
+      this.showDropdown = false
+    },
+    toggleNewProductForm: function() {
+      this.showNewProductForm = !this.showNewProductForm;
+      this.showDropdown = false;
+      this.showDeleteCheckboxes = false;
     },
   },
 };
