@@ -47,7 +47,7 @@
         <svg
           v-if="authenticated && !showNewProductForm"
           class="edit-button shadow bg-yellow-400 h-9 rounded cursor-pointer p-1.5 hover:opacity-80 hover:shadow-inner"
-          @click="toggleDropdown"
+          @click="$emit('toggle-dropdown')"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           aria-haspopup="true"
@@ -61,7 +61,7 @@
         <div
           v-show="showDropdown && authenticated"
           class="absolute left-0 top-0 w-screen h-screen z-20"
-          @click="toggleDropdown"
+          @click="$emit('toggle-dropdown')"
         ></div>
         <div
           v-show="showDropdown && authenticated"
@@ -72,13 +72,13 @@
         >
           <div class="py-1">
             <a
-              @click="toggleNewProductForm"
+              @click="$emit('toggle-new-product-form')"
               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
               role="menuitem"
               >Lägg till produkt</a
             >
             <a
-              @click="$emit('delete-products')"
+              @click="handleDeleteProducts"
               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
               role="menuitem"
               >Ta bort produkter</a
@@ -88,7 +88,7 @@
         <button
           v-if="showNewProductForm && authenticated"
           class="shadow-sm bg-gray-400 px-4 py-2 text-white font-bold rounded  hover:opacity-80 hover:shadow-inner"
-          @click="toggleNewProductForm"
+          @click="$emit('toggle-new-product-form')"
         >
           Tillbaka
         </button>
@@ -100,22 +100,15 @@
 <script>
 export default {
   name: "ProductTableHead",
-  data() {
-    return {
-      showDropdown: false,
-    };
-  },
   props: {
     authenticated: Boolean,
+    showDropdown: Boolean,
+    selectedProducts: Boolean,
     showNewProductForm: Boolean,
   },
   methods: {
-    toggleDropdown: function() {
-      this.showDropdown = !this.showDropdown;
-    },
-    toggleNewProductForm: function() {
-      this.showDropdown = false;
-      this.$emit("toggleNewProductForm");
+    handleDeleteProducts: function() {
+      this.selectedProducts ? this.$emit('delete-products') : this.$emit('toggle-delete-checkboxes')
     },
   },
 };

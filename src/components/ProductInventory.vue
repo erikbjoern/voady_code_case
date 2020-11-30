@@ -23,9 +23,13 @@
         >
           <product-table-head
             :authenticated="authenticated"
+            :selectedProducts="!!selectedProducts.length"
             :showNewProductForm="showNewProductForm"
-            @toggleNewProductForm="showNewProductForm = !showNewProductForm"
+            :showDropdown="showDropdown"
             @delete-products="deleteProducts"
+            @toggle-delete-checkboxes="toggleDeleteCheckboxes"
+            @toggle-dropdown="toggleDropdown"
+            @toggle-new-product-form="toggleNewProductForm"
           />
           <tbody v-if="showNewProductForm && authenticated">
             <new-product-row :newProduct="newProduct" />
@@ -45,6 +49,7 @@
             v-else-if="data && data.products !== {}"
             :authenticated="authenticated"
             :products="data.products"
+            :showDeleteCheckboxes="showDeleteCheckboxes"
             @select="addProductToSelection"
           />
           <div v-else class="text-gray-500 p-4 border-none">
@@ -72,6 +77,7 @@ export default {
   components: { ProductTableBody, NewProductRow, ProductTableHead },
   data() {
     return {
+      showDeleteCheckboxes: false,
       showDropdown: false,
       showNewProductForm: false,
       newProduct: {
@@ -125,11 +131,13 @@ export default {
               `,
             });
 
-            deleteProducts.forEach((productToDelete => {
-              const products = data.products
-              const index = products.indexOf(products.find(p => p.id === productToDelete.id))
-              products.splice(index, 1)
-            }))
+            deleteProducts.forEach((productToDelete) => {
+              const products = data.products;
+              const index = products.indexOf(
+                products.find((p) => p.id === productToDelete.id)
+              );
+              products.splice(index, 1);
+            });
 
             store.writeQuery({
               query: gql`
@@ -190,6 +198,17 @@ export default {
         this.errorMessage = error;
         console.log(error);
       }
+    },
+    toggleDeleteCheckboxes: function() {
+      this.showDeleteCheckboxes = !this.showDeleteCheckboxes;
+      this.showDropdown = false;
+    },
+    toggleDropdown: function() {
+      this.showDropdown = !this.showDropdown;
+    },
+    toggleNewProductForm: function() {
+      this.showNewProductForm = !this.showNewProductForm;
+      this.showDropdown = false;
     },
   },
 };
