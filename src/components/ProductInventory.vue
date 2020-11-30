@@ -39,7 +39,10 @@
             @toggle-new-product-form="toggleNewProductForm"
           />
           <tbody v-if="showNewProductForm && authenticated">
-            <new-product-row :newProduct="newProduct" />
+            <new-product-row
+              :newProduct="newProduct"
+              @input="productAdded = false"
+            />
           </tbody>
           <form
             v-if="showNewProductForm && authenticated"
@@ -67,9 +70,14 @@
           <div v-else class="text-gray-500 p-4 border-none">
             Inga produkter hittades
           </div>
-          <div v-if="errorMessage" class="ml-20 mt-2 text-red-900">
-            {{ graphqlError || "Något gick fel." }}
-          </div>
+          <td colspan="8">
+            <div v-if="errorMessage" class="m-4 text-red-900">
+              {{ graphqlError || "Något gick fel." }}
+            </div>
+            <div v-if="productAdded" class="text-green-700 m-5">
+              Produkten lades till
+            </div>
+          </td>
         </table>
       </div>
     </template>
@@ -113,6 +121,7 @@ export default {
       editedBalances: [],
       selectedProducts: [],
       errorMessage: null,
+      productAdded: false,
     };
   },
   props: {
@@ -209,15 +218,13 @@ export default {
       }
     },
     updateAllProducts: async function() {
-      debugger
-
       try {
         await this.$apollo.mutate({
           mutation: EDIT_PRODUCTS_BALANCE,
           variables: {
             products: this.editedBalances,
-          }
-        })
+          },
+        });
 
         this.editedBalances = [];
         this.selectedProducts = [];
@@ -239,22 +246,62 @@ export default {
         balance,
       } = event.target;
 
+      const newProduct = {
+        name: name.value,
+        id: id.value,
+        brand: brand.value,
+        volume: parseInt(volume.value),
+        purchase_price: parseFloat(purchase_price.value),
+        selling_price: parseFloat(selling_price.value),
+        balance: parseInt(balance.value),
+      };
+
       try {
         const response = await this.$apollo.mutate({
           mutation: ADD_PRODUCT,
           variables: {
-            product: {
-              name: name.value,
-              id: id.value,
-              brand: brand.value,
-              volume: parseInt(volume.value),
-              purchase_price: parseFloat(purchase_price.value),
-              selling_price: parseFloat(selling_price.value),
-              balance: parseInt(balance.value),
-            },
+            product: newProduct,
+          },
+          update: (store, { data: { addProduct } }) => {
+            const data = store.readQuery({
+              query: gql`
+                query products {
+                  products {
+                    id
+                    name
+                    brand
+                    volume
+                    purchase_price
+                    selling_price
+                    balance
+                  }
+                }
+              `,
+            });
+
+            data.products.push(newProduct);
+
+            store.writeQuery({
+              query: gql`
+                query products {
+                  products {
+                    id
+                    name
+                    brand
+                    volume
+                    purchase_price
+                    selling_price
+                    balance
+                  }
+                }
+              `,
+              data,
+            });
           },
         });
 
+        this.errorMessage = null;
+        this.productAdded = true;
         e.target.reset();
       } catch (error) {
         this.errorMessage = error;
