@@ -326,6 +326,7 @@ export default {
       this.showNewProductForm = !this.showNewProductForm;
       this.showDropdown = false;
       this.showDeleteCheckboxes = false;
+      this.productAdded = false;
     },
   },
 };
