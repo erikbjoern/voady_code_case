@@ -1,34 +1,13 @@
 # voady_client
+Code case for Voady - a hair product inventory.
 
-## Project setup
-```
-yarn install
-```
+## To run the cloned client locally
+* `$ yarn install`
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+* `$ yarn serve`
 
-### Compiles and minifies for production
-```
-yarn build
-```
+* Run the local [server](https://github.com/erikbjoern/voady_code_case_api#readme) and seed the database.
 
-### Run your unit tests
-```
-yarn test:unit
-```
+* Navigate to http://localhost:8080/
 
-### Run your end-to-end tests
-```
-yarn test:e2e
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+* Log in with `erik@mail.com` : `password`
